@@ -126,4 +126,8 @@ app.post("/api/book", async (req, res) => {
 // --- CHANGE 3: DYNAMIC PORT ---
 // Railway/Render will provide their own port. 5001 is the fallback.
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// You MUST listen on 0.0.0.0 for cloud deployments
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
