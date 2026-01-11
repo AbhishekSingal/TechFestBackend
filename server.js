@@ -9,11 +9,26 @@ const app = express();
 
 // --- CHANGE 1: PRO CORS CONFIG ---
 // This allows your Vercel frontend to talk to this backend
+// Nuclear CORS: Allow everything explicitly
 app.use(cors({
-    origin: '*', // For the interview sprint, '*' is safest. 
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: true, // This tells the server to reflect the request origin
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
+// Manual Pre-flight Handler (Safari needs this)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || "*");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 app.use(express.json());
 
