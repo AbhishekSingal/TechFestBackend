@@ -53,14 +53,9 @@ app.use((req, res, next) => {
 
 // 1. Database Connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000, // If DB doesn't connect in 5s, it will error out instead of hanging
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Tryst DB Connected"))
-  .catch((err) => {
-    console.error("❌ DB Error:", err);
-    // Important: Don't kill the process, let the server stay up to show the error
-  });
+  .catch((err) => console.error("❌ DB Error:", err));
 
 // 2. Database Schemas
 const UserSchema = new mongoose.Schema({
@@ -126,8 +121,4 @@ app.post("/api/book", async (req, res) => {
 // --- CHANGE 3: DYNAMIC PORT ---
 // Railway/Render will provide their own port. 5001 is the fallback.
 const PORT = process.env.PORT || 5001;
-
-// You MUST listen on 0.0.0.0 for cloud deployments
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
